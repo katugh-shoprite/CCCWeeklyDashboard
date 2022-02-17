@@ -85,7 +85,7 @@ temp$Store <- str_replace_all(temp$Store, "Head Office", "Home Office")
 ReportingData <- csc_weekly_report %>% 
   filter(Store != "Head Office") 
 
-ReportingData <- rbind(ReportingData,temp)
+csc_weekly_report <- rbind(ReportingData,temp)
 
 write_csv(csc_weekly_report, paste0(report_path,"csc_weekly_report ",dt,".csv"))
 
