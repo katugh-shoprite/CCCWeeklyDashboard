@@ -23,7 +23,7 @@ user <- function(wd){
 }
 
 ##### Set Main paths
-username<-  user(getwd())
+username <-  user(getwd())
 #main_path <- paste0("C:/Users/",username,"/OneDrive - Shoprite Checkers (Pty) Limited/GIT Repo/Customer Care Complaints Weekly Dashboard/")
 report_path <- paste0("C:/Users/",username,"/OneDrive - Shoprite Checkers (Pty) Limited/Reporting Files and Documents/Tableau Dashboard Automation/Customer Care Weekly Dashboard/")
 
@@ -89,12 +89,12 @@ csc_weekly_report <- rbind(ReportingData,temp)
 
 write_csv(csc_weekly_report, paste0(report_path,"csc_weekly_report ",dt,".csv"))
 
-write.xlsx(as.data.frame(csc_weekly_report), paste0(report_path,"Archive CC Dashboard/","csc_weekly_report_",dt,".xlsx"), row.names = FALSE)
+#write.xlsx(as.data.frame(csc_weekly_report), paste0(report_path,"Archive CC Dashboard/","csc_weekly_report_",dt,".xlsx"), row.names = FALSE)
 
 #OUtput for KPI Dashboard
-KPI <- ReportingData %>%
-  select(Brand, Division, `Service Category`, `Service Category`, `Incident Category`, 
-         Object, Region, `Product Brand`, `Ticket ID`, `Created On`, Status, LocationID)
+#KPI <- ReportingData %>%
+#  select(Brand, Division, `Service Category`, `Service Category`, `Incident Category`, 
+#        Object, Region, `Product Brand`, `Ticket ID`, `Created On`, Status, LocationID)
 
 #write_csv(KPIdb, paste0(report_path,"KPI DB csc weekly report.csv"))
 
