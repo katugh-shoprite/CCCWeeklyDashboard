@@ -27,28 +27,47 @@ username <-  user(getwd())
 #main_path <- paste0("C:/Users/",username,"/OneDrive - Shoprite Checkers (Pty) Limited/GIT Repo/Customer Care Complaints Weekly Dashboard/")
 report_path <- paste0("C:/Users/",username,"/OneDrive - Shoprite Checkers (Pty) Limited/Reporting Files and Documents/Tableau Dashboard Automation/Customer Care Weekly Dashboard/")
 
-### Read in List of Divisions to be excluded
-Div_Excl_List <- read_csv("Input/Div Excl List.csv", col_names = TRUE, col_types = "c")
+### Read in List of Divisions to be included
+Div_Incl_List <- read_csv("Input/Div Incl List.csv", col_names = TRUE, col_types = "c")
   #read_csv(paste0(main_path,"Div Excl List.csv"), col_names = TRUE, col_types = "c")
 
-### Read in List of Divisions to be excluded
+### Read in List of Incident Categories to be excluded
 Incident_Excl_List <- read_csv("Input/Incident Excl List.csv", col_names = TRUE, col_types = "c")
 
-### Read in list of service categories that we want to include
+### Read in list of Service Categories that we want to include
 Service_Cats <- read_csv("Input/Service Cats.csv", col_names = TRUE, col_types = "c")
 
-### Read in list of Non-Careline agents
-Agents <- read_csv("Input/AgentExclList.csv", col_names = TRUE, col_types = "c")
+### Read in list of Careline agents
+Agents <- read_csv("Input/AgentInclList.csv", col_names = TRUE, col_types = "c")
 
 ### Read in list extract from C4C (SAP service cloud)
 SapRawData <- read_csv("Input/SAPAnalyticsReport.csv", col_names = TRUE)
 
-### This bit of code filters the data extract down to what is applicable
-ReportingData <- SapRawData %>% 
+### This bit of code filters the data extract down to what is applicable for Careline
+CCReportingData <- SapRawData %>% 
+  filter(`Ticket Type` == "Careline") %>% 
+  inner_join(Div_Incl_List, by = "Division")  %>% 
+  inner_join(Service_Cats, by = "Service Category") %>% 
   anti_join(Incident_Excl_List, by = "Incident Category") %>%
-  anti_join(Agents, by = "Agent") %>%
-  inner_join(Service_Cats, by = "Service Category") %>%
-  anti_join(Div_Excl_List, by = "Division") 
+  inner_join(Agents, by = "Agent")
+
+### This bit of code filters the data extract down to what is applicable for Ecommerce
+LSReportingData <- SapRawData %>%
+  filter(`Ticket Type` == "E-commerce") %>%
+  inner_join(Service_Cats, by = "Service Category") %>% 
+  anti_join(Incident_Excl_List, by = "Incident Category") %>%
+  inner_join(Agents, by = "Agent")
+
+#CCReportingData %>% write_csv("CCReportingData.csv")
+
+### Rename
+LSReportingData$Brand <- "LiquorShop Online"
+LSReportingData$Division <- "LiquorShop Online"
+LSReportingData$Region <- "LiquorShop Online"
+LSReportingData$`Store Name` <- "LiquorShop Online"
+
+### Combine the Reporting Data for Careline and Liquor Shop
+ReportingData <- rbind(CCReportingData, LSReportingData)
 
 csc_weekly_report <- ReportingData %>%
   mutate(CleanCaseDesc = CleanText(ReportingData$'Case Description')) %>%
@@ -75,19 +94,27 @@ csc_weekly_report <- ReportingData %>%
          `Cell Phone`, `Calendar Day Date`, #`Incident Description`,
          `Ticket Type`, LocationID) 
   
+#This part of the code is to specifically rename Head Office to Home office
+
+#Filter to only the Home Office Store
 temp <- csc_weekly_report %>%
   filter(Store == "Head Office") 
 
+#Rename 
 temp$`Brand (Store)` <- str_replace_all(temp$`Brand (Store)`, "#", "Home Office")
 temp$`Division (Store)` <- str_replace_all(temp$`Division (Store)`, "Western Cape Division", "Western Cape Division (Home Office)")
 temp$Store <- str_replace_all(temp$Store, "Head Office", "Home Office")
   
+#Filter original data to exclude  the Home Office Store
 ReportingData <- csc_weekly_report %>% 
   filter(Store != "Head Office") 
 
+#Rowbind the 2 data sets
 csc_weekly_report <- rbind(ReportingData,temp)
 
-write_csv(csc_weekly_report, paste0(report_path,"csc_weekly_report ",dt,".csv"))
+write_csv(csc_weekly_report, paste0(report_path,"WIP/csc_weekly_report ",dt,".csv"))
+
+#write_csv(csc_weekly_report, "csc_weekly_report.csv")
 
 #write.xlsx(as.data.frame(csc_weekly_report), paste0(report_path,"Archive CC Dashboard/","csc_weekly_report_",dt,".xlsx"), row.names = FALSE)
 
