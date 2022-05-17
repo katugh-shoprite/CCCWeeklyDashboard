@@ -113,6 +113,12 @@ ReportingData <- csc_weekly_report %>%
 csc_weekly_report <- rbind(ReportingData,temp) %>% 
     filter(`Division (Store)` != "Western Cape Division" ) # this piece of code was added into handle stores that were not renamed, because of the DataRite issue
 
+csc_weekly_report$`Product Brand` <- sub("#", "" , csc_weekly_report$`Product Brand`)
+csc_weekly_report$`Product Description` <- sub("#", "" , csc_weekly_report$`Product Description`)
+csc_weekly_report$`First Name` <- sub("#", "" , csc_weekly_report$`First Name`)
+csc_weekly_report$`Last Name` <- sub("#", "" , csc_weekly_report$`Last Name`)
+csc_weekly_report$`Cell Phone` <- sub("#", "" , csc_weekly_report$`Cell Phone`)
+
 write_csv(csc_weekly_report, paste0(report_path,"WIP/csc_weekly_report ",dt,".csv")) 
 
 #write_csv(csc_weekly_report, "csc_weekly_report.csv")
