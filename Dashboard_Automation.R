@@ -96,7 +96,7 @@ csc_weekly_report <- ReportingData %>%
   
 #This part of the code is to specifically rename Head Office to Home office
 
-#Filter to only the Home Office Store
+#Filter to only the Home Office Store using the store, because of the DataRite issue
 temp <- csc_weekly_report %>%
   filter(Store == "Head Office") 
 
@@ -110,9 +110,10 @@ ReportingData <- csc_weekly_report %>%
   filter(Store != "Head Office") 
 
 #Rowbind the 2 data sets
-csc_weekly_report <- rbind(ReportingData,temp)
+csc_weekly_report <- rbind(ReportingData,temp) %>% 
+    filter(`Division (Store)` != "Western Cape Division" ) # this piece of code was added into handle stores that were not renamed, because of the DataRite issue
 
-write_csv(csc_weekly_report, paste0(report_path,"WIP/csc_weekly_report ",dt,".csv"))
+write_csv(csc_weekly_report, paste0(report_path,"WIP/csc_weekly_report ",dt,".csv")) 
 
 #write_csv(csc_weekly_report, "csc_weekly_report.csv")
 
