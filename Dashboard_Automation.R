@@ -126,11 +126,11 @@ write_csv(csc_weekly_report, paste0(report_path,"WIP/csc_weekly_report ",dt,".cs
 #write.xlsx(as.data.frame(csc_weekly_report), paste0(report_path,"Archive CC Dashboard/","csc_weekly_report_",dt,".xlsx"), row.names = FALSE)
 
 #OUtput for KPI Dashboard
-#KPI <- ReportingData %>%
-#  select(Brand, Division, `Service Category`, `Service Category`, `Incident Category`, 
-#        Object, Region, `Product Brand`, `Ticket ID`, `Created On`, Status, LocationID)
-
-#write_csv(KPIdb, paste0(report_path,"KPI DB csc weekly report.csv"))
+KPI <- ReportingData %>%
+  select(Brand, Division, `Service Category`, `Service Category`, `Incident Category`, 
+    Object, Region, `Product Brand`, `Ticket ID`, `Created On`, Status, LocationID)
+ 
+write_csv(KPIdb, paste0(report_path,"KPI DB csc weekly report.csv"))
 
 #end <-  Sys.time()
 
