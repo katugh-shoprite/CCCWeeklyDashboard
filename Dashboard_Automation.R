@@ -106,11 +106,11 @@ temp$`Division (Store)` <- str_replace_all(temp$`Division (Store)`, "Western Cap
 temp$Store <- str_replace_all(temp$Store, "Head Office", "Home Office")
   
 #Filter original data to exclude  the Home Office Store
-ReportingData <- csc_weekly_report %>% 
+csc_weekly_report_strs <- csc_weekly_report %>% 
   filter(Store != "Head Office") 
 
 #Rowbind the 2 data sets
-csc_weekly_report <- rbind(ReportingData,temp) %>% 
+csc_weekly_report <- rbind(csc_weekly_report_strs,temp) %>% 
     filter(`Division (Store)` != "Western Cape Division" ) # this piece of code was added into handle stores that were not renamed, because of the DataRite issue
 
 csc_weekly_report$`Product Brand` <- sub("#", "" , csc_weekly_report$`Product Brand`)
@@ -125,8 +125,8 @@ write_csv(csc_weekly_report, paste0(report_path,"WIP/csc_weekly_report ",dt,".cs
 
 #write.xlsx(as.data.frame(csc_weekly_report), paste0(report_path,"Archive CC Dashboard/","csc_weekly_report_",dt,".xlsx"), row.names = FALSE)
 
-#OUtput for KPI Dashboard
-KPI <- ReportingData %>%
+#Output for KPI Dashboard
+KPIdb <- ReportingData %>%
   select(Brand, Division, `Service Category`, `Service Category`, `Incident Category`, 
     Object, Region, `Product Brand`, `Ticket ID`, `Created On`, Status, LocationID)
  
