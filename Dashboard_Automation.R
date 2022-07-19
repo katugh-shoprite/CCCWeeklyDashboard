@@ -58,8 +58,6 @@ LSReportingData <- SapRawData %>%
   anti_join(Incident_Excl_List, by = "Incident Category") %>%
   inner_join(Agents, by = "Agent")
 
-#CCReportingData %>% write_csv("CCReportingData.csv")
-
 ### Rename
 LSReportingData$Brand <- "LiquorShop Online"
 LSReportingData$Division <- "LiquorShop Online"
@@ -133,8 +131,6 @@ KPIdb <- ReportingData %>%
 write_csv(KPIdb, paste0(report_path,"KPI DB csc weekly report.csv"))
 
 #end <-  Sys.time()
-
 #duration <- end - start
-
 #print(duration)
 
